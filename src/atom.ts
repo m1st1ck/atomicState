@@ -20,6 +20,8 @@ export type Atom<T> = {
   reset: Reset;
 };
 
+const isObject = (a: any) => !!a && a.constructor === Object;
+
 const atomCore = <T>(defaultState: T): AtomCore<T> => {
   let currentState = defaultState;
 
@@ -43,8 +45,10 @@ const atomCore = <T>(defaultState: T): AtomCore<T> => {
   const setState: SetState<T> = (nState) => {
     if (typeof nState === "function") {
       currentState = (nState as SetStateFuncArg<T>)(currentState);
-    } else {
+    } else if (isObject(nState)) {
       currentState = { ...currentState, ...nState };
+    } else {
+      currentState = nState as T;
     }
 
     notify();

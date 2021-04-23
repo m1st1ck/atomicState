@@ -8,9 +8,13 @@ export const useAtom = <T>(atom: {
   const [state, setState] = useState(atom.getState());
 
   useEffect(() => {
-    return atom.subscribe(() => {
+    const unsub = atom.subscribe(() => {
       setState(atom.getState());
     });
+
+    setState(atom.getState());
+
+    return unsub;
   }, [atom]);
 
   return state;
